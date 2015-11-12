@@ -21,80 +21,81 @@ public class ApiRequestServiceImpl implements ApiRequestService {
 	}
 
 	private ApiRequest convert(Transaction transaction) {
+		ApiRequest apiRequest = new ApiRequest();
 		AuthService authService = new AuthServiceImpl();
-		Auth auth = authService.getAuth(transaction.getId());
-		
-		
-		ApiRequest transactionRequest = new ApiRequest();
-		transactionRequest.setUserName(auth.getUserName());
-		transactionRequest.setPassword(auth.getPassword());
-		transactionRequest.setSignedData(auth.getSignedData());
-		transactionRequest.setConduitCode(auth.getConduitCode());
-		transactionRequest.setLocatorCode(auth.getLocatorCode());
-		
-		transactionRequest.setReferenceNo(transaction.getId());
-		transactionRequest.setTransDate(transaction.getDate_time());
+		ReceiverBankService receiverBankService = new ReceiverBankServiceImpl();
+		ReceiverService receiverService = new ReceiverServiceImpl();
+		Receiver receiver = receiverService.getReceiver(transaction.getReceiver());
+		ReceiverBank receiverBank = new ReceiverBank();
+
+		apiRequest.setReceiverFirstname(receiver.getrFirstname());
+		apiRequest.setReceiverMiddlename(receiver.getrMiddleInitial());
+		apiRequest.setReceiverLastname(receiver.getrLastname());
+		apiRequest.setReceiverAddress1(receiver.getrAddress1());
+		apiRequest.setReceiverAddress2(receiver.getoAddress2());
+		apiRequest.setReceiverMobilePhone(receiver.getrMobilePhone());
+		apiRequest.setReceiverGender(receiver.getrReceiverGender());
+		apiRequest.setReceiverBirthDate(receiver.getrReceiverBirthDate());
+
+		if (transaction.getType_of_transaction().equals("BD")) {
+			receiverBank = receiverBankService.getReceiverBank(transaction.getOther_details(), receiver.getrId());
+		}
+
+		apiRequest.setAccountNo(receiverBank.getAccountNo());
+
+		Auth auth = authService.getAuthForApiRequest(transaction.getId(), transaction.getAmt_out().toString(),
+				transaction.getDate_time(), receiverBank.getAccountNo());
+
+		apiRequest.setUserName(auth.getUserName());
+		apiRequest.setPassword(auth.getPassword());
+		apiRequest.setSignedData(auth.getSignedData());
+		apiRequest.setConduitCode(auth.getConduitCode());
+		apiRequest.setLocatorCode(auth.getLocatorCode());
+		apiRequest.setReferenceNo(transaction.getId());
+		apiRequest.setTransDate(transaction.getDate_time());
 
 		SenderService senderService = new SenderServiceImpl();
 		Sender sender = senderService.getSender(transaction.getSender());
-		transactionRequest.setSenderFirstName(sender.getrFirstname());
-		transactionRequest.setSenderMiddlename(sender.getrMiddleInitial());
-		transactionRequest.setSenderLastname(sender.getrLastname());
-		transactionRequest.setSenderAddress1(sender.getrAddress1());
-		transactionRequest.setSenderAddress2(sender.getoAddress2());
-		transactionRequest.setSenderPhone(sender.getrPhoneNo());
-
-		ReceiverService receiverService = new ReceiverServiceImpl();
-		Receiver receiver = receiverService.getReceiver(transaction.getReceiver());
-		transactionRequest.setReceiverFirstname(receiver.getrFirstname());
-		transactionRequest.setReceiverMiddlename(receiver.getrMiddleInitial());
-		transactionRequest.setReceiverLastname(receiver.getrLastname());
-		transactionRequest.setReceiverAddress1(receiver.getrAddress1());
-		transactionRequest.setReceiverAddress2(receiver.getoAddress2());
-		transactionRequest.setReceiverMobilePhone(receiver.getrMobilePhone());
-		transactionRequest.setReceiverGender(receiver.getrReceiverGender());
-		transactionRequest.setReceiverBirthDate(receiver.getrReceiverBirthDate());
+		apiRequest.setSenderFirstName(sender.getrFirstname());
+		apiRequest.setSenderMiddlename(sender.getrMiddleInitial());
+		apiRequest.setSenderLastname(sender.getrLastname());
+		apiRequest.setSenderAddress1(sender.getrAddress1());
+		apiRequest.setSenderAddress2(sender.getoAddress2());
+		apiRequest.setSenderPhone(sender.getrPhoneNo());
 
 		if (transaction.getType_of_transaction().equals("CP")) {
-			transactionRequest.setTransactionType(TransactionTypeCodes.PICKUP_CASH_ANYWHERE);
-			transactionRequest.setPayableCode(PayableCodes.PICKUP_CASH_ANYWHERE);
-			transactionRequest.setBankCode(DefaulCodes.BDO_DEFAULT_MESSAGE);
-			transactionRequest.setBranchName(DefaulCodes.BDO_DEFAULT_MESSAGE);
+			apiRequest.setTransactionType(TransactionTypeCodes.PICKUP_CASH_ANYWHERE);
+			apiRequest.setPayableCode(PayableCodes.PICKUP_CASH_ANYWHERE);
+			apiRequest.setBankCode(DefaulCodes.BDO_DEFAULT_MESSAGE);
+			apiRequest.setBranchName(DefaulCodes.BDO_DEFAULT_MESSAGE);
 		}
 
 		if (transaction.getType_of_transaction().equals("BD")) {
-			transactionRequest.setTransactionType(TransactionTypeCodes.CREDIT_TO_BDO_ACCOUNT);
-			transactionRequest.setPayableCode(PayableCodes.CREDIT_TO_BDO_ACCOUNT);
-			transactionRequest.setBankCode(DefaulCodes.BDO_DEFAULT_MESSAGE);
-			transactionRequest.setBranchName(DefaulCodes.BDO_DEFAULT_MESSAGE);
+			apiRequest.setTransactionType(TransactionTypeCodes.CREDIT_TO_BDO_ACCOUNT);
+			apiRequest.setPayableCode(PayableCodes.CREDIT_TO_BDO_ACCOUNT);
+			apiRequest.setBankCode(DefaulCodes.BDO_DEFAULT_MESSAGE);
+			apiRequest.setBranchName(DefaulCodes.BDO_DEFAULT_MESSAGE);
 
-			ReceiverBankService receiverBankService = new ReceiverBankServiceImpl();
-			ReceiverBank receiverBank = receiverBankService.getReceiverBank(transaction.getOther_details(),
-					receiver.getrId());
-
-			transactionRequest.setAccountNo(receiverBank.getAccountNo());
 		}
-		
 
-		transactionRequest.setLandedCurrency(CurrencyCodes.PHILIPPINES);
+		apiRequest.setLandedCurrency(CurrencyCodes.PHILIPPINES);
 		DecimalFormat decimalFormatter = new DecimalFormat("#.00");
-		transactionRequest.setLandedAmount(decimalFormatter.format(transaction.getAmt_out()));
-		transactionRequest.setMessageToBene1(DefaulCodes.BDO_DEFAULT_MESSAGE);
-		transactionRequest.setMessageToBene2("");
-		
-		return transactionRequest;
+		apiRequest.setLandedAmount(decimalFormatter.format(transaction.getAmt_out()));
+		apiRequest.setMessageToBene1(DefaulCodes.BDO_DEFAULT_MESSAGE);
+		apiRequest.setMessageToBene2("");
+
+		return apiRequest;
 	}
-	
-	
-	
-	
-//	public static void main(String[] args) {
-//		TransactionService transactionService = new TransactionServiceImpl();
-//		Transaction transaction = transactionService.getTransaction("15092100080");
-//		
-//		TransactionRequestService service = new TransactionRequestServiceImpl();
-//		TransactionRequest transactionRequest = service.convertToRequest(transaction);
-//		System.out.println(transactionRequest.getSignedData());
-//	}
+
+	// public static void main(String[] args) {
+	// TransactionService transactionService = new TransactionServiceImpl();
+	// Transaction transaction =
+	// transactionService.getTransaction("15092100080");
+	//
+	// TransactionRequestService service = new TransactionRequestServiceImpl();
+	// TransactionRequest transactionRequest =
+	// service.convertToRequest(transaction);
+	// System.out.println(transactionRequest.getSignedData());
+	// }
 
 }

@@ -5,5 +5,7 @@ import com.bmapi.model.Auth;
 public interface AuthService {
 	Auth getAuth();
 
-	Auth getAuth(String transaction_id);
+	Auth getAuthForApiRequest(String transaction_id, String landedAmount,String transDate,String accountNo);
+
+	Auth getAuthForApiStatusRequest(String transaction_id);
 }

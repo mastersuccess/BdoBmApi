@@ -66,6 +66,31 @@ public class ApiRequest extends AuthDomain {
 	}
 
 	public ApiRequest() {
+		this.referenceNo = "";
+		this.transDate = "";
+		this.senderFirstName = "";
+		this.senderLastname = "";
+		this.senderMiddlename = "";
+		this.senderAddress1 = "";
+		this.senderAddress2 = "";
+		this.senderPhone = "";
+		this.receiverFirstname = "";
+		this.receiverLastname = "";
+		this.receiverMiddlename = "";
+		this.receiverAddress1 = "";
+		this.receiverAddress2 = "";
+		this.receiverMobilePhone = "";
+		this.receiverGender = "";
+		this.receiverBirthDate = "";
+		this.transactionType = "";
+		this.payableCode = "";
+		this.bankCode = "";
+		this.branchName = "";
+		this.accountNo = "";
+		this.landedCurrency = "";
+		this.landedAmount = "";
+		this.messageToBene1 = "";
+		this.messageToBene2 = "";
 	}
 
 	public String getReferenceNo() {

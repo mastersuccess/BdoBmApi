@@ -24,7 +24,7 @@ public class GeneralResource {
 	@GET
 	@Path("/{transaction_id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAsJSON(@PathParam("transaction_id") String referenceNo) {
+	public Response getApiRequestAsJSON(@PathParam("transaction_id") String referenceNo) {
 		TransactionService transactionService = new TransactionServiceImpl();
 		Transaction transaction = transactionService.getTransaction(referenceNo);
 
@@ -38,7 +38,7 @@ public class GeneralResource {
 	@GET
 	@Path("/{transaction_id}")
 	@Produces(MediaType.TEXT_XML)
-	public Response getAsXML(@PathParam("transaction_id") String referenceNo) {
+	public Response getApiRequestAsXML(@PathParam("transaction_id") String referenceNo) {
 		TransactionService transactionService = new TransactionServiceImpl();
 		Transaction transaction = transactionService.getTransaction(referenceNo);
 
@@ -52,7 +52,7 @@ public class GeneralResource {
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_XML)
-	public Response statusRequest() {
+	public Response getApiStatusRequest() {
 		AuthService authService = new AuthServiceImpl();
 		Auth auth = authService.getAuth();
 		return Response.status(Status.OK).entity(auth).build();
