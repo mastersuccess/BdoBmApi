@@ -31,8 +31,8 @@ public class SenderDaoImpl implements SenderDao {
 				+ " 		(SELECT CONCAT(address,'|',suburb,'|',state,'|',sender.country)  FROM address WHERE sender = `code` ORDER BY id DESC LIMIT 1), "
 				+ " 		CASE"
 				+ "				WHEN sender.landline != ''"
-				+ "					THEN sender.landline"
-				+ "				ELSE sender.mobile "
+				+ "					THEN REPLACE(sender.landline,' ','')"
+				+ "				ELSE REPLACE(sender.mobile,' ','') "
 				+ " 		END AS sender_phone_no"
 				+ "		FROM sender "
 				+ "		WHERE sender.code = ?";

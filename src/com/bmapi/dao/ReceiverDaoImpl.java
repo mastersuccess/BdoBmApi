@@ -14,7 +14,12 @@ public class ReceiverDaoImpl implements ReceiverDao {
 	public ReceiverDaoImpl() {
 		jdbc = new JdbcConnection();
 	}
-
+	public static void main(String[] args) {
+		ReceiverDao dao = new ReceiverDaoImpl();
+		Receiver r = dao.getReceiver("1508310003B001");
+		System.out.println(r.getrId());
+		System.out.println(r.getrFirstname());
+	}
 	@Override
 	public Receiver getReceiver(String receiverId) {
 		String query = "SELECT "
@@ -62,7 +67,7 @@ public class ReceiverDaoImpl implements ReceiverDao {
 			receiver.setrMobilePhone(resultSet.getString(8));
 			receiver.setrReceiverBirthDate(resultSet.getString(9));
 			
-			
+			resultSet.close();
 			
 			return receiver;
 		} catch (SQLException e) {

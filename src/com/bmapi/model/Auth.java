@@ -4,6 +4,16 @@ public class Auth {
 	private String userName;
 	private String password;
 	private String signedData;
+	private static final String conduitCode = "BM";
+	private static final String locatorCode = "133";
+
+	public static String getLocatorcode() {
+		return locatorCode;
+	}
+
+	public static String getConduitcode() {
+		return conduitCode;
+	}
 
 	public String getUserName() {
 		return userName;

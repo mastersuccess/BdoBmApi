@@ -12,14 +12,18 @@ import com.bmapi.model.Sender;
 import com.bmapi.model.Transaction;
 import com.bmapi.model.TransactionRequest;
 
-public class TransactionRequestServiceImpl implements TransactionRequestService{
-	
+public class TransactionRequestServiceImpl implements TransactionRequestService {
+
 	@Override
 	public TransactionRequest convertToRequest(Transaction transaction) {
+		return convert(transaction);
+	}
+
+	private TransactionRequest convert(Transaction transaction) {
 		TransactionRequest transactionRequest = new TransactionRequest();
 		transactionRequest.setReferenceNo(transaction.getId());
 		transactionRequest.setTransDate(transaction.getDate_time());
-		
+
 		SenderService senderService = new SenderServiceImpl();
 		Sender sender = senderService.getSender(transaction.getSender());
 		transactionRequest.setSenderFirstName(sender.getrFirstname());
@@ -28,7 +32,7 @@ public class TransactionRequestServiceImpl implements TransactionRequestService{
 		transactionRequest.setSenderAddress1(sender.getrAddress1());
 		transactionRequest.setSenderAddress2(sender.getoAddress2());
 		transactionRequest.setSenderPhone(sender.getrPhoneNo());
-		
+
 		ReceiverService receiverService = new ReceiverServiceImpl();
 		Receiver receiver = receiverService.getReceiver(transaction.getReceiver());
 		transactionRequest.setReceiverFirstname(receiver.getrFirstname());
@@ -40,25 +44,27 @@ public class TransactionRequestServiceImpl implements TransactionRequestService{
 		transactionRequest.setReceiverGender(receiver.getrReceiverGender());
 		transactionRequest.setReceiverBirthDate(receiver.getrReceiverBirthDate());
 
-		if(transaction.getType_of_transaction().equals("CP")){
+		if (transaction.getType_of_transaction().equals("CP")) {
 			transactionRequest.setTransactionType(TransactionTypeCodes.PICKUP_CASH_ANYWHERE);
 			transactionRequest.setPayableCode(PayableCodes.PICKUP_CASH_ANYWHERE);
 			transactionRequest.setBankCode(DefaulCodes.BDO_DEFAULT_MESSAGE);
 			transactionRequest.setBranchName(DefaulCodes.BDO_DEFAULT_MESSAGE);
 		}
-		
-		if(transaction.getType_of_transaction().equals("BD")){
+
+		if (transaction.getType_of_transaction().equals("BD")) {
 			transactionRequest.setTransactionType(TransactionTypeCodes.CREDIT_TO_BDO_ACCOUNT);
 			transactionRequest.setPayableCode(PayableCodes.CREDIT_TO_BDO_ACCOUNT);
 			transactionRequest.setBankCode(DefaulCodes.BDO_DEFAULT_MESSAGE);
 			transactionRequest.setBranchName(DefaulCodes.BDO_DEFAULT_MESSAGE);
-			
+
 			ReceiverBankService receiverBankService = new ReceiverBankServiceImpl();
-			ReceiverBank receiverBank = receiverBankService.getReceiverBank(transaction.getOther_details(), receiver.getrId());
-			
+			ReceiverBank receiverBank = receiverBankService.getReceiverBank(transaction.getOther_details(),
+					receiver.getrId());
+
 			transactionRequest.setAccountNo(receiverBank.getAccountNo());
 		}
 		
+
 		transactionRequest.setLandedCurrency(CurrencyCodes.PHILIPPINES);
 		DecimalFormat decimalFormatter = new DecimalFormat("#.00");
 		transactionRequest.setLandedAmount(decimalFormatter.format(transaction.getAmt_out()));
@@ -66,6 +72,7 @@ public class TransactionRequestServiceImpl implements TransactionRequestService{
 		transactionRequest.setMessageToBene2("");
 		
 		return transactionRequest;
+		
 	}
 
 }

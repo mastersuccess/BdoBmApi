@@ -10,11 +10,14 @@ import com.bmapi.model.Transaction;
 public class TransactionDaoImpl implements TransactionDao {
 	JdbcConnection jdbc;
 	PreparedStatement preparedStatement;
-
+	
+	
 	public TransactionDaoImpl() {
 		jdbc = new JdbcConnection();
+		preparedStatement = null;
 	}
-
+	
+	
 	@Override
 	public Transaction getTransaction(String id) {
 		String query = "SELECT "
@@ -34,14 +37,16 @@ public class TransactionDaoImpl implements TransactionDao {
 				+ "			courier,"
 				+ "			other_details "
 				+ "		FROM transaction "
-				+ "		WHERE id = ? ";
+				+ "		WHERE "
+				+ "			id = ? AND "
+				+ "			(status != 'CANCELLED' OR status != 'FOR VERIFICATION')";
 			
 		try{
 			preparedStatement = jdbc.getConnection().prepareStatement(query);
 			preparedStatement.setString(1,id);
 			ResultSet rs = preparedStatement.executeQuery();
-			Transaction transaction = new Transaction();
-			while(rs.next()){
+			if(rs.next()){
+				Transaction transaction = new Transaction();
 				transaction.setId(rs.getString(1));
 				transaction.setCode(rs.getString(2));
 				transaction.setAccount(rs.getString(3));
@@ -58,9 +63,8 @@ public class TransactionDaoImpl implements TransactionDao {
 				transaction.setService_charge(rs.getString(13));
 				transaction.setCourier(rs.getString(14));
 				transaction.setOther_details(rs.getString(15));
-				break;
+				return transaction;
 			}
-			return transaction;
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -69,5 +73,23 @@ public class TransactionDaoImpl implements TransactionDao {
 		
 	}
 
-	
+	@Override
+	public int updateStatus(String transaction_id, String status) {
+		int affectedRows = 0;
+		String query = "UPDATE transaction t "
+				+ "			SET t.status = ? "
+				+ "		WHERE t.id = ? ";
+		try {
+			preparedStatement = jdbc.getConnection().prepareStatement(query);
+			preparedStatement.setString(1, status);
+			preparedStatement.setString(2, transaction_id);
+			affectedRows = preparedStatement.executeUpdate();
+			return affectedRows;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return affectedRows;
+	}
+
 }
