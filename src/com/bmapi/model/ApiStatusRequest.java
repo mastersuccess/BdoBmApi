@@ -1,5 +1,8 @@
 package com.bmapi.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class ApiStatusRequest extends AuthDomain {
 	private String referenceNo;
 

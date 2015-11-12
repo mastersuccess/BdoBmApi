@@ -8,13 +8,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.bmapi.model.Auth;
 import com.bmapi.model.Transaction;
 import com.bmapi.model.ApiRequest;
-import com.bmapi.services.AuthService;
-import com.bmapi.services.AuthServiceImpl;
+import com.bmapi.model.ApiStatusRequest;
 import com.bmapi.services.ApiRequestService;
 import com.bmapi.services.ApiRequestServiceImpl;
+import com.bmapi.services.ApiStatusRequestService;
+import com.bmapi.services.ApiStatusRequestServiceImpl;
 import com.bmapi.services.TransactionService;
 import com.bmapi.services.TransactionServiceImpl;
 
@@ -50,12 +50,12 @@ public class GeneralResource {
 	}
 
 	@GET
-	@Path("/")
+	@Path("/status/{transaction_id}")
 	@Produces(MediaType.TEXT_XML)
-	public Response getApiStatusRequest() {
-		AuthService authService = new AuthServiceImpl();
-		Auth auth = authService.getAuth();
-		return Response.status(Status.OK).entity(auth).build();
+	public Response getApiStatusRequest(@PathParam("transaction_id") String transaction_id) {
+		ApiStatusRequestService apiStatusRequestService = new ApiStatusRequestServiceImpl();
+		ApiStatusRequest apiStatusRequest = apiStatusRequestService.convertToRequest(transaction_id);
+		return Response.status(Status.OK).entity(apiStatusRequest).build();
 	}
 
 	public static void main(String[] args) {
