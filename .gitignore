@@ -1,0 +1,9 @@
+target/classes/com/bmapi/model/ApiRequest.class
+target/classes/com/bmapi/model/ApiStatusRequest.class
+target/classes/com/bmapi/model/Auth.class
+*.class
+*.class
+target/classes/com/bmapi/model/Auth.class
+*.class
+*.properties
+*.class
