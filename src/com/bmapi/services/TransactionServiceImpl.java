@@ -17,6 +17,7 @@ public class TransactionServiceImpl implements TransactionService {
 	
 	public TransactionServiceImpl() {
 		transactions = new HashMap<>();
+		
 	}
 
 	@Override

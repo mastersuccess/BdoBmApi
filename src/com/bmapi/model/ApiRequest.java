@@ -3,7 +3,7 @@ package com.bmapi.model;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class TransactionRequest {
+public class ApiRequest extends AuthDomain {
 	private String referenceNo;
 	private String transDate;
 	private String senderFirstName;
@@ -30,12 +30,14 @@ public class TransactionRequest {
 	private String messageToBene1;
 	private String messageToBene2;
 
-	public TransactionRequest(String referenceNo, String transDate, String senderFirstName, String senderLastname,
+	public ApiRequest(String userName, String password, String signedData, String conduitCode,
+			String locatorCode, String referenceNo, String transDate, String senderFirstName, String senderLastname,
 			String senderMiddlename, String senderAddress1, String senderAddress2, String senderPhone,
 			String receiverFirstname, String receiverLastname, String receiverMiddlename, String receiverAddress1,
 			String receiverAddress2, String receiverMobilePhone, String receiverGender, String receiverBirthDate,
 			String transactionType, String payableCode, String bankCode, String branchName, String accountNo,
 			String landedCurrency, String landedAmount, String messageToBene1, String messageToBene2) {
+		super(userName, password, signedData, conduitCode, locatorCode);
 		this.referenceNo = referenceNo;
 		this.transDate = transDate;
 		this.senderFirstName = senderFirstName;
@@ -63,7 +65,7 @@ public class TransactionRequest {
 		this.messageToBene2 = messageToBene2;
 	}
 
-	public TransactionRequest() {
+	public ApiRequest() {
 	}
 
 	public String getReferenceNo() {

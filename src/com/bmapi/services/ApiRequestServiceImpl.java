@@ -6,21 +6,32 @@ import com.bmapi.constants.CurrencyCodes;
 import com.bmapi.constants.DefaulCodes;
 import com.bmapi.constants.PayableCodes;
 import com.bmapi.constants.TransactionTypeCodes;
+import com.bmapi.model.Auth;
 import com.bmapi.model.Receiver;
 import com.bmapi.model.ReceiverBank;
 import com.bmapi.model.Sender;
 import com.bmapi.model.Transaction;
-import com.bmapi.model.TransactionRequest;
+import com.bmapi.model.ApiRequest;
 
-public class TransactionRequestServiceImpl implements TransactionRequestService {
+public class ApiRequestServiceImpl implements ApiRequestService {
 
 	@Override
-	public TransactionRequest convertToRequest(Transaction transaction) {
+	public ApiRequest convertToRequest(Transaction transaction) {
 		return convert(transaction);
 	}
 
-	private TransactionRequest convert(Transaction transaction) {
-		TransactionRequest transactionRequest = new TransactionRequest();
+	private ApiRequest convert(Transaction transaction) {
+		AuthService authService = new AuthServiceImpl();
+		Auth auth = authService.getAuth(transaction.getId());
+		
+		
+		ApiRequest transactionRequest = new ApiRequest();
+		transactionRequest.setUserName(auth.getUserName());
+		transactionRequest.setPassword(auth.getPassword());
+		transactionRequest.setSignedData(auth.getSignedData());
+		transactionRequest.setConduitCode(auth.getConduitCode());
+		transactionRequest.setLocatorCode(auth.getLocatorCode());
+		
 		transactionRequest.setReferenceNo(transaction.getId());
 		transactionRequest.setTransDate(transaction.getDate_time());
 
@@ -72,7 +83,18 @@ public class TransactionRequestServiceImpl implements TransactionRequestService 
 		transactionRequest.setMessageToBene2("");
 		
 		return transactionRequest;
-		
 	}
+	
+	
+	
+	
+//	public static void main(String[] args) {
+//		TransactionService transactionService = new TransactionServiceImpl();
+//		Transaction transaction = transactionService.getTransaction("15092100080");
+//		
+//		TransactionRequestService service = new TransactionRequestServiceImpl();
+//		TransactionRequest transactionRequest = service.convertToRequest(transaction);
+//		System.out.println(transactionRequest.getSignedData());
+//	}
 
 }
