@@ -17,7 +17,7 @@ public class TransactionServiceImpl implements TransactionService {
 	
 	public TransactionServiceImpl() {
 		transactions = new HashMap<>();
-		
+		transactionDao = new TransactionDaoImpl();
 	}
 
 	@Override
@@ -41,6 +41,7 @@ public class TransactionServiceImpl implements TransactionService {
 		transactionDao.updateStatus(id, this.status);
 		remarkDao = new RemarksDaoImpl();
 		remarkDao.createRemark(id, this.status);
+		remarkDao.createLog(id, this.status);
 	}
 
 	@Override
@@ -49,6 +50,7 @@ public class TransactionServiceImpl implements TransactionService {
 		transactionDao.updateStatus(id, this.status);
 		remarkDao = new RemarksDaoImpl();
 		remarkDao.createRemark(id, this.status);
+		remarkDao.createLog(id, this.status);
 	}
 
 	@Override
@@ -57,6 +59,10 @@ public class TransactionServiceImpl implements TransactionService {
 		transactionDao.updateStatus(id, this.status);
 		remarkDao = new RemarksDaoImpl();
 		remarkDao.createRemark(id, this.status);
+		remarkDao.createLog(id, this.status);
 	}
-
+	public static void main(String[] args) {
+		TransactionService service = new TransactionServiceImpl();
+		service.changeStatusToPending("15111200001");
+	}
 }

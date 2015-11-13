@@ -7,3 +7,5 @@ target/classes/com/bmapi/model/Auth.class
 *.class
 *.properties
 *.class
+*.class
+*.class

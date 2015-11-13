@@ -35,6 +35,7 @@ public class RemarksDaoImpl implements RemarksDao {
 
 	@Override
 	public int createLog(String transaction_id, String status) {
+		int affectedRows = 0;
 		String task = "TRANSACTION WITH TRX NO [ "+transaction_id+" ] SET TO "+status;
 		String query = "INSERT INTO logs(account,role,datetime,type_of_task,task,account_name) VALUES(?,?,NOW(),?,?,?)";
 		try {
@@ -44,11 +45,10 @@ public class RemarksDaoImpl implements RemarksDao {
 			preparedStatement.setString(3, "6");
 			preparedStatement.setString(4, task);
 			preparedStatement.setString(5, this.account.getString("account.name"));
-			return preparedStatement.executeUpdate();
+			affectedRows = preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
-		return 0;
+		return affectedRows;
 	}
 }
