@@ -57,7 +57,7 @@ public class TransactionDaoImpl implements TransactionDao {
 				transaction.setSender(rs.getString(8));
 				transaction.setReceiver(rs.getString(9));
 				transaction.setAmt_in(rs.getDouble(10));
-				transaction.setAmt_out(transaction.getAmt_in()*transaction.getExchange_rate());
+				transaction.setAmt_out((transaction.getAmt_in()*transaction.getExchange_rate()));
 				transaction.setPurpose(rs.getString(11));
 				transaction.setSpecial_instruction(rs.getString(12));
 				transaction.setService_charge(rs.getString(13));

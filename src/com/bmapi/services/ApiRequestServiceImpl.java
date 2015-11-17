@@ -42,9 +42,10 @@ public class ApiRequestServiceImpl implements ApiRequestService {
 		}
 
 		apiRequest.setAccountNo(receiverBank.getAccountNo());
-
-		Auth auth = authService.getAuthForApiRequest(transaction.getId(), transaction.getAmt_out().toString(),
-				transaction.getDate_time(), receiverBank.getAccountNo());
+		DecimalFormat decimalFormatter = new DecimalFormat("#.00");
+		String landedAmountFormatted = decimalFormatter.format(transaction.getAmt_out());
+		Auth auth = authService.getAuthForApiRequest(transaction.getId(), landedAmountFormatted,
+				transaction.getDate_time(), (receiverBank.getAccountNo() == null) ? "" : receiverBank.getAccountNo());
 
 		apiRequest.setUserName(auth.getUserName());
 		apiRequest.setPassword(auth.getPassword());
@@ -79,23 +80,11 @@ public class ApiRequestServiceImpl implements ApiRequestService {
 		}
 
 		apiRequest.setLandedCurrency(CurrencyCodes.PHILIPPINES);
-		DecimalFormat decimalFormatter = new DecimalFormat("#.00");
-		apiRequest.setLandedAmount(decimalFormatter.format(transaction.getAmt_out()));
+		apiRequest.setLandedAmount(landedAmountFormatted);
 		apiRequest.setMessageToBene1(DefaulCodes.BDO_DEFAULT_MESSAGE);
 		apiRequest.setMessageToBene2("");
 
 		return apiRequest;
 	}
-
-	// public static void main(String[] args) {
-	// TransactionService transactionService = new TransactionServiceImpl();
-	// Transaction transaction =
-	// transactionService.getTransaction("15092100080");
-	//
-	// TransactionRequestService service = new TransactionRequestServiceImpl();
-	// TransactionRequest transactionRequest =
-	// service.convertToRequest(transaction);
-	// System.out.println(transactionRequest.getSignedData());
-	// }
 
 }
